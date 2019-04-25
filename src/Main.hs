@@ -62,15 +62,7 @@ main = do
   let gameInfo = (eitherDecode $ DB.pack $ str) :: Either String GameSetupInfo
   case gameInfo of
     Left err -> putStrLn err
-    Right info -> do  {- let playerTokens = gameSetupInfoToList info
-                          myTokens = getMyTokens $ concat playerTokens
-                          getMyTokens filledTokens = let t1 = getAToken filledTokens in [t1, getAToken (t1 : filledTokens)]
-                          getAToken filledTokens = let token = indexToList $ intToIndex 20 1
-                      
-                                                     in 
-                                                        if notElem token filledTokens then token else getAToken filledTokens
-                      -}
-                      -- putStrLn $ DB.unpack $ encode info
+    Right info -> do
                       g <- newStdGen
                       let  playerTokens =  gameSetupInfoToList info
                            availableIndxs = [[rw,col] | rw <- [1..rows], col <- [1..cols]] \\  (concat playerTokens)
@@ -98,11 +90,6 @@ playGame () = do
                       p2Tokens = getTokens $ last $ players $ st
                       getTokens ls = Tokens (listToIndex $ head $ ls) (listToIndex $ last $ ls)
                       (board, nwTokens) = play (mkBoard $ spaces st) p1Tokens p2Tokens
-                  {- if (isWinner board nwTokens) || (nwTokens == p1Tokens) then 
-                    putStrLn $ DB.unpack $ encode $ st
-                    hFlush stdout
-                  else
-                    do -}
                   let p1TokensList = [indexToList $ token1 nwTokens, indexToList $ token2 nwTokens]
                   putStrLn $ DB.unpack $ encode $ GameState ((turn st) + 1) [last $ players st, p1TokensList] (boardToList board)
                   hFlush stdout
